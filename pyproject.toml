@@ -16,6 +16,7 @@ python = "3.9.16"
 numpy = "1.21.0"
 torch = "^2.0.0"
 librosa = "^0.8.0"
+fastapi = {extras = ["all"], version = "^0.95.1"}
 
 
 [build-system]
