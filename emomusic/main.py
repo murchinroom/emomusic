@@ -18,7 +18,7 @@ async def root():
 #     return {"arouse": a[0], "valence": v[0]}
 
 class MusicEmotion(BaseModel):
-    arouse: float
+    arousal: float
     valence: float
 
 # upload file -> predict
@@ -29,7 +29,7 @@ async def predictfile(file: UploadFile) -> MusicEmotion:
         tmp.write(file.file.read())
 
         a, v = predictor.predict_data([tmp.name])
-        return MusicEmotion(arouse=a[0], valence=v[0])
+        return MusicEmotion(arousal=a[0], valence=v[0])
 
 # uri -> fetch -> predict
 @app.get("/predicturi")
@@ -43,5 +43,5 @@ async def predicturi(mp3: str) -> MusicEmotion:
         # Predict emotion
         a, v = predictor.predict_data([tmp.name])
 
-        return MusicEmotion(arouse=a[0], valence=v[0])
+        return MusicEmotion(arousal=a[0], valence=v[0])
 
