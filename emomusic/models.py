@@ -31,8 +31,8 @@ class AudioNet(nn.Module):
         self._pool = nn.AvgPool1d(10, 10)
         self._drop = nn.Dropout(0.5)
         self._act = nn.ReLU()
-        self._fc1 = nn.Linear(29*num_filters2, num_hidden)
-        self._fc2 = nn.Linear(num_hidden, out_size)
+        self._fc1 = nn.Linear(29*num_filters2, out_size)
+        #self._fc2 = nn.Linear(num_hidden, out_size)
 
     def forward(self, x):
 
@@ -44,8 +44,8 @@ class AudioNet(nn.Module):
         x = x.view(-1, ch * w)
 
         x = self._fc1(x)
-        x = self._drop(x)
-        x = self._act(x)
-        x = self._fc2(x)
+        #x = self._drop(x)
+        #x = self._act(x)
+        #x = self._fc2(x)
 
         return x
