@@ -8,7 +8,7 @@ import argparse
 
 class MusicEmotionRecognition:
     def __init__(self):
-        self.args_from_json = {'data_dir': 'Data', 'deam_dir': 'Data/DEAM_dataset', 'font_dir': 'Font', 'models_dir': 'Models', 'plots_dir': 'Plots', 'audio_extension': 'mp3', 'sample_rate': 44100, 'device': 'cuda', 'mode': 'preprocess', 'dimension': 'both', 'params_dict': {'in_ch': 20, 'num_filters1': 32, 'num_filters2': 64, 'num_hidden': 128, 'out_size': 2}, 'valence_params_dict': {'in_ch': 20, 'num_filters1': 32, 'num_filters2': 64, 'num_hidden': 64, 'out_size': 1}, 'arousal_params_dict': {'in_ch': 20, 'num_filters1': 32, 'num_filters2': 32, 'num_hidden': 64, 'out_size': 1}, 'lr_init': 0.001, 'lr_decay': 0.1, 'decay_interval': 1000, 'weight_decay': 0.01, 'num_epochs': 2000, 'log_interval': 1}
+        self.args_from_json = {'data_dir': 'Data', 'deam_dir': 'Data/DEAM_dataset', 'font_dir': 'Font', 'models_dir': 'Models', 'plots_dir': 'Plots', 'audio_extension': 'mp3', 'sample_rate': 44100, 'device': 'cuda', 'mode': 'preprocess', 'dimension': 'both', 'params_dict': {'in_ch': 20, 'num_filters1': 32, 'num_filters2': 64, 'num_hidden': 256, 'out_size': 2}, 'valence_params_dict': {'in_ch': 20, 'num_filters1': 32, 'num_filters2': 64, 'num_hidden': 64, 'out_size': 1}, 'arousal_params_dict': {'in_ch': 20, 'num_filters1': 32, 'num_filters2': 32, 'num_hidden': 64, 'out_size': 1}, 'lr_init': 0.001, 'lr_decay': 0.1, 'decay_interval': 1000, 'weight_decay': 0.01, 'num_epochs': 2000, 'log_interval': 1}
         self.args = argparse.Namespace(**self.args_from_json)
         self.args.data_pt = ""
         self.args.models_dir = os.path.join(os.path.dirname(__file__), "Models")
