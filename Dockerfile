@@ -41,8 +41,7 @@ COPY . .
 # Patch libsndfile1 to support mp3
 # sudo ln -sf /home/z/libsndfile-binaries/libsndfile_arm64.so /usr/lib64/libsndfile.so.1
 # bullseye install libsndfile1 at: /usr/lib/aarch64-linux-gnu/libsndfile.so.1
-RUN mkdir -p /usr/lib64 && \
-    ln -sf /app/libsndfile-binaries/libsndfile_$(uname -m | sed 's/x86_64/x86_64/;s/arm64\|aarch64/arm64/').so /usr/lib/aarch64-linux-gnu/libsndfile.so.1
+RUN ln -sf /app/libsndfile-binaries/libsndfile_$(uname -m | sed 's/x86_64/x86_64/;s/arm64\|aarch64/arm64/').so /usr/lib/$(uname -m)-linux-gnu/libsndfile.so.1
  
 # Expose the port that the server will listen on
 # EXPOSE 50051
