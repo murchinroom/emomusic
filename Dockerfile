@@ -1,9 +1,5 @@
-# TODO: docker run failed
-#       OSError: cannot load library 'libsndfile.so': libsndfile.so: cannot open shared object file: No such file or directory
-# 哈哈哈 Python 部署——我的一生之敌。
-
 # Build phase
-FROM python:3.9.16-slim-bullseye AS builder
+FROM python:3.9.19-slim-bullseye AS builder
 
 # Set the working directory
 WORKDIR /app
@@ -12,7 +8,8 @@ WORKDIR /app
 RUN \
     sed -i 's#http://deb.debian.org#https://mirrors.tuna.tsinghua.edu.cn#g' /etc/apt/sources.list && \
     apt-get update && \
-    apt-get install -y build-essential
+    apt-get install -y build-essential && \
+    apt-get install -y libsndfile1
 
 ENV PIP_DEFAULT_TIMEOUT=1000 \
     PIP_DISABLE_PIP_VERSION_CHECK=1 \
@@ -30,12 +27,9 @@ RUN poetry config virtualenvs.create false && \
 # Copy the source code
 COPY . .
 
-# Build the server
-#RUN poetry build -f wheel && \
-#    pip install dist/*.whl
-
+# DO NOT USE MULTI PHASE FOR THIS. DUE TO THE INSTALLATION OF libsndfile1. 
 # Runtime phase
-#FROM python:3.9.16-slim-bullseye
+# FROM python:3.9.19-slim-bullseye
 
 # Set the working directory
 #WORKDIR /app
@@ -44,6 +38,12 @@ COPY . .
 #COPY --from=builder /usr/local/lib/python3.9/site-packages /usr/local/lib/python3.9/site-packages
 #COPY --from=builder /app /app
 
+# Patch libsndfile1 to support mp3
+# sudo ln -sf /home/z/libsndfile-binaries/libsndfile_arm64.so /usr/lib64/libsndfile.so.1
+# bullseye install libsndfile1 at: /usr/lib/aarch64-linux-gnu/libsndfile.so.1
+RUN mkdir -p /usr/lib64 && \
+    ln -sf /app/libsndfile-binaries/libsndfile_$(uname -m | sed 's/x86_64/x86_64/;s/arm64\|aarch64/arm64/').so /usr/lib/aarch64-linux-gnu/libsndfile.so.1
+ 
 # Expose the port that the server will listen on
 # EXPOSE 50051
 
