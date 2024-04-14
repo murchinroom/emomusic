@@ -6,8 +6,7 @@ WORKDIR /app
 
 # Install build dependencies
 RUN apt-get update && \
-    apt-get install -y build-essential && \
-    apt-get install -y libsndfile1
+    apt-get install -y build-essential
 
 ENV PIP_DEFAULT_TIMEOUT=1000 \
     PIP_DISABLE_PIP_VERSION_CHECK=1 \
@@ -24,21 +23,24 @@ RUN poetry config virtualenvs.create false && \
 # Copy the source code
 COPY . .
 
-# DO NOT USE MULTI PHASE FOR THIS. DUE TO THE INSTALLATION OF libsndfile1. 
 # Runtime phase
-# FROM python:3.9.19-slim-bullseye
+FROM python:3.9.19-slim-bullseye
 
 # Set the working directory
-#WORKDIR /app
+WORKDIR /app
 
 # Copy the server binary and its dependencies from the builder image
-#COPY --from=builder /usr/local/lib/python3.9/site-packages /usr/local/lib/python3.9/site-packages
-#COPY --from=builder /app /app
+COPY --from=builder /usr/local/lib/python3.9/site-packages /usr/local/lib/python3.9/site-packages
+COPY --from=builder /app /app
 
-# Patch libsndfile1 to support mp3
-# sudo ln -sf /home/z/libsndfile-binaries/libsndfile_arm64.so /usr/lib64/libsndfile.so.1
-# bullseye install libsndfile1 at: /usr/lib/aarch64-linux-gnu/libsndfile.so.1
-RUN ln -sf /app/libsndfile-binaries/libsndfile_$(uname -m | sed 's/x86_64/x86_64/;s/arm64\|aarch64/arm64/').so /usr/lib/$(uname -m)-linux-gnu/libsndfile.so.1
+# Install the patched libsndfile1 to support mp3
+# sudo ln -sf /path/to/libsndfile-binaries/libsndfile_arm64.so /usr/lib64/libsndfile.so.1
+# Debian install libsndfile1 at: /usr/lib/aarch64-linux-gnu/libsndfile.so.1
+# See also: 
+#   - https://packages.debian.org/bookworm/amd64/libsndfile1/filelist
+#   - https://packages.debian.org/bookworm/arm64/libsndfile1/filelist
+RUN ln -sf /app/libsndfile-binaries/libsndfile_$(uname -m | sed 's/x86_64/x86_64/;s/arm64\|aarch64/arm64/').so /usr/lib/$(uname -m)-linux-gnu/libsndfile.so.1 && \
+    ldconfig
  
 # Expose the port that the server will listen on
 # EXPOSE 50051
